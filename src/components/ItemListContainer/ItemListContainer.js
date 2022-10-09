@@ -3,7 +3,7 @@ import { getProducts, getProductsByCategory } from "../../asyncMock"
 import { useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 
-const ItemListContainer = ({ greeting  }) => {
+const ItemListContainer = () => {
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
 
