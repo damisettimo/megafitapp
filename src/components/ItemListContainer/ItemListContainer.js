@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect} from 'react'
 import { getProducts, getProductsByCategory } from "../../asyncMock"
+import ItemList from '../ItemList/ItemList'
 import { useParams } from 'react-router-dom'
-import { Link } from 'react-router-dom'
 
 const ItemListContainer = () => {
     const [products, setProducts] = useState([])
@@ -31,24 +31,7 @@ const ItemListContainer = () => {
     
     return (
         <div>
-            <h2>Nuestros Suplementos</h2>
-            { products.map ((prod) => {
-                return (
-                    
-                    <div className="row align-items-center" key={prod.id}>
-                        <div className="col card" style={{ width: "18rem"}}>
-                            <div className="col card-body">
-                                <h5 className="card-title">{prod.name}</h5>
-                                <img src={prod.img} alt="logo MegaFit-Sup"/>
-                                <h3>{prod.category}</h3>
-                                <p className="card-text">${prod.price}</p>
-                                <Link to={`/detail/${prod.id}`}><button className="btn btn-primary">Ver detalle</button></Link>
-                            </div>
-                        </div> 
-
-                    </div>
-                )              
-            })}
+            <ItemList products={products} />
         </div>
     )        
 }
