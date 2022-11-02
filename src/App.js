@@ -1,5 +1,4 @@
 import './App.css';
-import { useState, createContext } from 'react';
 import Navbar from './components/navbar/Navbar';
 import ItemListContainer from './components/ItemListContainer/ItemListContainer';
 import ItemDetailContainer from './components/ItemDetailContainer/ItemDetailContainer';
