@@ -4,7 +4,7 @@ const ItemCount = ({stock = 0, initial = 1, onAdd})=> {
     const [quantity, setQuantity] = useState(initial)
  
     const increment = () => {
-         for(var i = 0; i < 5; i++) {
+         for(var i = 0; i < 1; i++) {
              setQuantity(valorPrev => valorPrev + 1)
          }
  

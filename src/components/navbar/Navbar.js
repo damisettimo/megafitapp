@@ -40,7 +40,9 @@ const NavBar = () => {
             <NavLink to={'/category/tablet'} className={({ isActive}) => isActive ? 'ActiveOption' : 'Option'}>Tablet</NavLink>
             <NavLink to={'/category/notebook'} className={({ isActive}) => isActive ? 'ActiveOption' : 'Option'}>Notebook</NavLink> */}
         </div>
-        <CartWidget />
+        <NavLink to='/cart'>
+          <CartWidget />
+        </NavLink>
     </nav>
   )
 }
