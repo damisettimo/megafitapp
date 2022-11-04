@@ -4,16 +4,21 @@ import { CartContext } from '../../context/CartContext'
 
 const ItemDetail = ({ id, name, img, description, price, stock }) => {
    
-    const { addItem } = useContext(CartContext)
+    const { addItem, getProductQuantity } = useContext(CartContext)
 
     const handleOnAdd = (quantity) => {
         const productToAdd = {
-            id, name, price, quantity
+            id, name, price, description, quantity
         }
 
         addItem(productToAdd)
         
     }
+
+    const quantityAdded = getProductQuantity(id)
+
+
+
     return ( 
         <div>
             
@@ -23,7 +28,7 @@ const ItemDetail = ({ id, name, img, description, price, stock }) => {
                     <h3>Descripcion:{description}</h3>
                     <p>${price}</p>
                     <section>
-                        <ItemCount onAdd={handleOnAdd} stock={stock} />
+                       {stock !== 0 ? <ItemCount onAdd={handleOnAdd} stock={stock} initial={quantityAdded}/>: <p>Sin stock</p>}
                     </section>
             </div>
         </div>

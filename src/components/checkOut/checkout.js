@@ -1,32 +1,80 @@
-import { useContext } from "react";
+import { useState, useContext } from "react";
 import { CartContext } from "../../context/CartContext";
-import {addDoc, collection} from "firebase/firestore"
+import { collection, getDocs, query, where, documentId, writeBatch, addDoc, } from "firebase/firestore"
 import { db } from "../../services/firebase";
 
 const Checkout = () => {
 
+    const [loading, setLoading] = useState(false)
+
     const { cart, total } = useContext(CartContext)
 
-    const createOrder = () => {
-        const objOrder = {
-            buyer: {
-                name: "jorge rod",
-                phone: "341587896",
-                mail: "jorgero@hotmail.com"
-            },
+    const createOrder = async () => {
+
+        setLoading(true)
+
+        try {
+            const objOrder = {
+                buyer: {
+                    name: "jorge rod",
+                    phone: "341587896",
+                    mail: "jorgero@hotmail.com"
+                },
+        
+                item: cart,
+                total: total
+            }
+
+            const batch = writeBatch(db)
+
+            const outOfStock = []
     
-            item: cart,
-            total: total
+            const ids = cart.map(prod => prod.id)
+    
+            const productsRef = collection(db, 'products')
+    
+            const productsAddedFromFirestore = await getDocs(query(productsRef, where(documentId(), 'in', ids)))
+
+            const { docs } = productsAddedFromFirestore
+
+            docs.forEach(doc=>{
+                const dataDoc = doc.data()
+                const stockDb = dataDoc.stock
+
+                const productAddedToCart = cart.find(prod => prod.id === doc.id)
+                const prodQuantity = productAddedToCart?.quantity
+
+                if(stockDb >= prodQuantity) {
+                    batch.update(doc.ref, { stock: stockDb - prodQuantity })
+
+                } else {
+                    outOfStock.push({ id: doc.id, ...dataDoc})
+                }
+            })
+
+            if(outOfStock.length === 0) {
+                await batch.commit()
+
+                const orderRef = collection(db, 'orders')
+
+                const orderAdded = await addDoc(orderRef, objOrder)
+
+                console.log(`El id de su orden es: ${orderAdded.id}`)
+            } else {
+                console.log("Algunos productos no se encuentran en stock")
+            }
+            
+        } catch (error) {
+            console.log(error)
+        }  finally {
+            setLoading(false)
         }
 
-        const collectionRef = collection (db, "orders")
-
-        addDoc (collectionRef, objOrder).then(response => {
-            console.log(response.id)
-        }).catch(error => {
-            console.log(error)
-            
-        })
+        if(loading) {
+            return <h1>Se esta generando su pedido...</h1>
+                    
+        }
+        
 
     }
 
@@ -39,14 +87,6 @@ const Checkout = () => {
         </div>
     )
 
-
-
-
-
-
-
-
-
-
-
 }
+
+export default Checkout
